@@ -11,7 +11,7 @@ export default {
             saveInput: {},
             saveDisabled: true,
             showMsg: false,
-            isDisabled: true,
+            bookNotClicked: true,
             isbn: "",
         }
     },
@@ -81,14 +81,14 @@ export default {
 
     <div class="container"> 
         <form>
-            <div>
+            <div v-if="bookNotClicked">
                 <h3>Añadir libro por ISBN</h3>
                 <div>
                     <input type="text" :value="isbn" placeholder="ISBN-10 o ISBN-13">
-                    <button type="button" @click="">Añadir por ISBN</button>
+                    <button type="button" @click="bookNotClicked=false;">Añadir por ISBN</button>
                 </div>  
                 <h3>Añadir desde cero</h3>
-                <button type="button" @click="">Añadir libro desde cero</button>
+                <button type="button" @click="bookNotClicked=false;">Añadir libro desde cero</button>
             </div>
 
             
