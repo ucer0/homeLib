@@ -1,0 +1,322 @@
+/* @import './base.css'; */
+
+/* #app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+} */
+
+/* ------------- */
+/* - VARIABLES - */
+/* ------------- */
+:root {
+  --bg: #efefef;
+  --bg_accent: #e9e9ed;
+  --border: #cdcdcd;
+  --table_header: #eeeeee;
+  --table_row1: #f3f4f8;
+  --table_row2: #fbfbfb;
+  --button1: #74cff7;
+  --button2: #ffb4b4;
+  --button3: #addb74;
+  --spec_bg: aliceblue;
+}
+
+/* ------------------ */
+/* - CLASES NATIVAS - */
+/* ------------------ */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0 auto;
+  background-color: var(--bg);
+}
+
+tr:nth-child(odd) {
+  background-color: var(--table_row1);
+}
+tr:nth-child(even) {
+  background-color: var(--table_row2);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, td, th {
+  padding: 10px;
+}
+
+tr {
+  border: 1px solid var(--border);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  align-items: center;
+}
+
+form label,div {
+  padding: 10px;
+}
+
+form input {
+  padding: 5px;
+}
+
+select {
+  padding: 5px;
+  margin: 1px;
+  border: 1px solid var(--border);
+}
+
+button, input[type=submit], a {
+  padding: 10px;
+  margin: 2px;
+  border: 1px solid;
+}
+
+button:hover, input[type=submit]:hover, a {
+  cursor: pointer;
+}
+
+button, a {
+  background-color: var(--button1);
+
+}
+
+input[type=submit] {
+  background-color: var(--button3) ;
+}
+
+a, a:visited {
+  text-decoration: none;
+  color: black;
+  font-size: small;
+}
+
+/* -------------------- */
+/* - CLASES GENÉRICAS - */
+/* -------------------- */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.banner {
+  width: max-content;
+  text-align: center;
+  /* border-radius: 10px; */
+  /* background-color: var(--bg_accent); */
+  /* padding: 50px; */
+  margin: 10px;
+}
+
+/* ----------------- */
+/* - FLOATING FORM - */
+/* ----------------- */
+.floatingForm {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  z-index: 1000;
+  overflow-y: scroll;
+  max-height: 90%;
+}
+
+.floatingForm_bg {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.5;
+  z-index: 100;
+}
+
+.errTd {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: -10px;
+}
+
+/* ----------- */
+/* - BOTONES - */
+/* ----------- */
+.deleteButton {
+  background-color: var(--button2);
+}
+
+.updateButton {
+  background-color: var(--button3);
+}
+
+.historyButton {
+  background-color: var(--button1);
+}
+
+[class*="Button"] {
+  cursor: pointer;
+}
+
+.tableHeader {
+  background-color: var(--table_header) !important;
+}
+
+/* -------------------- */
+/* - ESPECIFICACIONES - */
+/* -------------------- */
+.addSpecs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addSpecs button {
+  padding: 5px;
+  margin: 1px;
+  border: 1px solid var(--border);
+}
+
+.specsAux {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.specsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.specs {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  background-color: var(--spec_bg);
+  font-size: small;
+  /* margin: 2px; */
+  max-height: 0px;
+  width: 100%;
+}
+
+.specsBtn {
+  display: flex;
+  align-items: center;
+  background-color: var(--button2);
+  max-height: 0px;
+}
+
+/* ---------------- */
+/* - FILAS NUEVAS - */
+/* ---------------- */
+.newRow {
+  border-top: 15px solid var(--border);
+}
+
+/* Hace override para que el estilo anterior solo lo tenga la primera instancia. 
+  No hay otra forma de hacer esto, ya lo siento. */
+.newRow ~ .newRow{
+  border-top: 1px solid var(--border);
+}
+
+/* ----------------- */
+/* - MENSAJE ERROR - */
+/* ----------------- */
+.msgContainer {
+  position: fixed;
+  bottom: 15%;
+  right: 25%;
+  /* top: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; */
+}
+
+.msg {
+  color: white;
+  background-color: black;
+  /* opacity: 0.8; */
+  border-radius: 10px;
+  width: max-content;
+}
+
+/* ------------ */
+/* - BUSCADOR - */
+/* ------------ */
+/* Siempre va con un .banner */
+.searchBox {
+  text-align: left;
+}
+
+/* -------------- */
+/* - PAGINATION - */
+/* -------------- */
+.pagination {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.regsPag {
+  text-align: right;
+}
+
+/* ----------- */
+/* - FILTROs - */
+/* ----------- */
+.filterContainer {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.filter {
+  display: flex;
+  border: 1px solid var(--border);
+  background-color: var(--table_row1);
+  border-radius: 5px;
+  flex-direction: column;
+}
