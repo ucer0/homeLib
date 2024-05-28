@@ -4,13 +4,12 @@ import BookView from '@/components/BookView.vue';
 
 export default {
     name: "Library",
+    props: ["user"],
     components: {
         BookView,
     },
     data() {
-
         return {
-            user: 1, // ESTO HABRÁ QUE CAMBIARLO!!!!!!
             code: "",
             msg: "",
             data: [],

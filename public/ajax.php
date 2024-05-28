@@ -16,6 +16,10 @@ if (!empty($post['accion'])) {
             $list = $lib->getPersonalLibrary($post["id"],$post["filter"]);
             response($list);
             break;
+        case 'saveBook':
+            $list = $lib->saveBook($post["id"],$post["data"],$post["isNew"]);
+            response($list);
+            break;
         case 'updateBook':
             $list = $lib->updateBook($post["id"],$post["data"]);
             response($list);

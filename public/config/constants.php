@@ -18,6 +18,8 @@ const QUERY_SIN_DATOS              = "SU0102";
 const QUERY_OK_MSG                 = "La consulta se ejecutó correctamente";
 const QUERY_UPDATE_MSG             = "Libro actualizado correctamente";
 const QUERY_NO_UPDATE_MSG          = "No se ha cambiado ningún campo";
+const QUERY_INSERT_MSG             = "Libro añadido correctamente";
+const QUERY_NO_INSERT_MSG          = "No se ha podido añadir libro";
 const QUERY_NO_EJECUTADA_MSG       = "Hubo un error al ejecutar la consulta";
 const QUERY_SIN_DATOS_MSG          = "No se encontró ningún registro";
 

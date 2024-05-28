@@ -56,12 +56,81 @@ class Library {
 
         return $this->result;
     }
-
-    // QUIZÁS PARA LIBERAR ALGO DE ESPACIO DE LA PRINCIPAL?
-    public function getBookData() {
-
-    }
     
+    public function saveBook($userID,$dataArray,$isNew) {
+        $this->result = [];
+
+        // // Si faltan datos los inicializo para que no de Warnings
+        // if (!empty($dataArray["lent"]) || !isset($dataArray["lent"])) {
+        //     $dataArray["lent"] = 0;
+        // }
+        // if (!empty($dataArray["lent_who"]) || !isset($dataArray["lent_who"])) {
+        //     $dataArray["lent_who"] = " ";
+        // }
+        // if (!empty($dataArray["lent_when"]) || !isset($dataArray["lent_when"])) {
+        //     $dataArray["lent_when"] = " ";
+        // }
+
+        // QUITAR LO DE isNew Y HACER EL CHECKEO SIEMPRE DE SI EXISTE AL GUARDAR EL LIBRO, NO ANTES !!!!!!!!
+        if ($isNew) {
+            $query = "INSERT INTO library.book (isbn,title,subtitle,author,coauthor,editor,edition,year,pages,id_format,id_genre,pic) 
+                        VALUES (:isbn,:title,:subtitle,:author,:coauthor,:editor,:edition,:year,:pages,:id_format,:id_genre,:pic)";
+
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(":isbn", $dataArray["isbn"]);
+            $stmt->bindValue(":title", $dataArray["title"]);
+            $stmt->bindValue(":subtitle", $dataArray["subtitle"] ?? null);
+            $stmt->bindValue(":author", $dataArray["author"]);
+            $stmt->bindValue(":coauthor", $dataArray["coauthor"] ?? null);
+            $stmt->bindValue(":editor", $dataArray["editor"]);
+            $stmt->bindValue(":edition", $dataArray["edition"]);
+            $stmt->bindValue(":year", $dataArray["year"]);
+            $stmt->bindValue(":pages", $dataArray["pages"]);
+            $stmt->bindValue(":id_format", $dataArray["id_format"]);
+            $stmt->bindValue(":id_genre", $dataArray["id_genre"]);
+            $stmt->bindValue(":pic", $this->getPicFromISBN($dataArray["isbn"]));
+
+            $stmt->execute();
+        }
+
+        // Buscamos el ID del libro a añadir para la colección personal
+        $query = "SELECT id_book FROM library.book WHERE isbn=:isbn";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":isbn", $dataArray["isbn"]);
+        $stmt->execute();
+        $bookID = $stmt->fetch()["id_book"];
+
+        // Añadimos el libro y los datos personales a la cuenta
+        $query = "INSERT INTO library.book_personal (id_user,id_book,dateBought,price,id_storage,shelf,lent,lent_who,lent_when)
+                    VALUES (:userID,:bookID,:dateBought,:price,:id_storage,:shelf,:lent,:lent_who,:lent_when)";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":userID", $userID);
+        $stmt->bindValue(":bookID", $bookID);
+        $stmt->bindValue(":dateBought", $dataArray["dateBought"] ?? null);
+        $stmt->bindValue(":price", $dataArray["price"] ?? null);
+        $stmt->bindValue(":id_storage", $dataArray["id_storage"] ?? 1);
+        $stmt->bindValue(":shelf", $dataArray["shelf"] ?? "");
+        $stmt->bindValue(":lent", $dataArray["lent"] ?? 0);
+        $stmt->bindValue(":lent_who", $dataArray["lent_who"] ?? null);
+        $stmt->bindValue(":lent_when", $dataArray["lent_when"] ?? null);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_INSERT_MSG;
+            } else {
+                $this->result["code"] = QUERY_SIN_DATOS; 
+                $this->result["msg"] = QUERY_NO_INSERT_MSG;
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
     public function updateBook($userID,$dataArray) {
         $this->result = [];
         $query = "UPDATE library.book_personal 
@@ -180,5 +249,44 @@ class Library {
         }
 
         return $arr;
+    }
+
+    /**
+     * Genera el link de una portada a partir de una base de datos de libros
+     * 
+     */
+    private function getPicFromISBN($isbn){
+        $imgLink = '';
+
+        if (strlen($isbn) == 13) {
+            $lastDigits = substr($isbn,-4);
+            $imgLink = 'https://images.isbndb.com/covers/'.substr($lastDigits, 0, 2).'/'.substr($lastDigits, 2).'/'.$isbn.'.jpg';
+        } else if (strlen($isbn) == 10) {
+            $lastDigits = substr($this->convertToISBN13($isbn),-4);
+            $imgLink = 'https://images.isbndb.com/covers/'.substr($lastDigits, 0, 2).'/'.substr($lastDigits, 2).'/'.$isbn.'.jpg';
+        }
+        
+        return $imgLink;
+    }
+
+    /**
+     * Convierte un ISBN-10 a un ISBN-13
+     * 
+     */
+    private function convertToISBN13($isbn) {
+        $isbn13 = '978'.substr($isbn,0,-1);
+        $lastDigit = 0;
+
+        foreach (str_split($isbn13) as $key => $value) {
+            if ($key % 2 != 0) {
+                $lastDigit += 3*intval($value);
+            } else {
+                $lastDigit += intval($value);
+            }
+        }
+
+        $isbn13 = substr($isbn13,-1).(10-($lastDigit%10));
+
+        return $isbn13;
     }
 }

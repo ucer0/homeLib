@@ -14,7 +14,7 @@ import { RouterLink, RouterView } from 'vue-router';
         <!-- <RouterLink to="/settings">Ajustes</RouterLink> -->
       </div>
   </div>
-  <RouterView />
+  <RouterView :user="1"/>
 </template>
 
 <style scoped>

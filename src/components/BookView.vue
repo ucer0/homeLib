@@ -113,7 +113,7 @@ export default {
             </div>
             <div>
                 <label for="price">Precio:</label>
-                <input type="text" v-model="data.price" name="price" :disabled="isDisabled" maxlength="6" size="6" @input="data.price = data.price.replace(/[^0-9]/g,'')">
+                <input type="text" v-model="data.price" name="price" :disabled="isDisabled" maxlength="6" size="6" @input="data.price = data.price.replace(/[^0-9.]/g,'')">
             </div>
             <div>
                 <label for="storage">Localización:</label>

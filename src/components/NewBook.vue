@@ -2,7 +2,7 @@
 import axios from 'axios';
 export default {
     name: "NewBook",
-    // props: ["user","book"],
+    props: ["user"],
     data() {
         return {
             code: "",
@@ -53,6 +53,22 @@ export default {
         async ajax(params) {
             const res = await axios.post('ajax.php', params);
             return res.data ? res.data : false;
+        },
+
+        async saveBook(arr,isNew) {
+            const res = await this.ajax({
+                accion: 'saveBook',
+                id: this.user,
+                data: arr,
+                isNew: isNew
+            });
+            this.code = res.code;
+            this.msg = res.msg;
+            this.showMsg = true;
+
+            if (this.code == "SU0100") {
+                this.saveInput = {};
+            }
         },
 
         async updateBook(id,arr) {
@@ -133,9 +149,7 @@ export default {
     </Transition>
 
     <div class="container"> 
-        <form>
-            {{ saveInput }}
-
+        <form id="saveBookForm">
             <div v-if="bookNotClicked">
                 <h3>Añadir libro por ISBN</h3>
                 <div>
@@ -167,7 +181,7 @@ export default {
                     <input type="text" v-model="saveInput['author']" name="author" required>
                 </div>
                 <div>
-                    <label for="coauthor">Coautor<span style="color: red" >*</span>:</label>
+                    <label for="coauthor">Coautor:</label>
                     <input type="text" v-model="saveInput['coauthor']" name="coauthor" required>
                 </div>
                 <div>
@@ -179,7 +193,7 @@ export default {
                     <input type="text" v-model="saveInput['edition']" name="edition" min="1" size="2" @input="saveInput['edition'] = numberCheck(saveInput['edition'])" required>
                 </div>
                 <div>
-                    <label for="year">Año de Publicación Original<span style="color: red" >*</span>:</label>
+                    <label for="year">Año Publicación Original<span style="color: red" >*</span>:</label>
                     <input type="text" v-model="saveInput['year']" name="year" min="1" maxlength="4" size="4" @input="saveInput['year'] = numberCheck(saveInput['year'])" required>
                 </div>
                 <div>
@@ -213,7 +227,7 @@ export default {
                 </div>
                 <div>
                     <label for="price">Precio:</label>
-                    <input type="text" v-model="saveInput['price']" name="price" maxlength="6" size="6" @input="saveInput['price'] = numberCheck(saveInput['price'])">
+                    <input type="text" v-model="saveInput['price']" name="price" maxlength="6" size="6" @input="saveInput['price'] = saveInput['price'].replace(/[^0-9.]/g,'')">
                 </div>
                 <div>
                     <label for="storage">Localización:</label>
@@ -241,8 +255,8 @@ export default {
             </div>
 
             <div v-if="!bookNotClicked">
-                <button v-if="bookFound" type="button" @click="this.saveBook(user,saveInput,false)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
-                <button v-else type="button" @click="this.saveBook(user,saveInput,true)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
+                <button v-if="bookFound" type="button" @click="this.saveBook(saveInput,false)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
+                <button v-else type="button" @click="this.saveBook(saveInput,true)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
             </div>
         </form>
     </div>

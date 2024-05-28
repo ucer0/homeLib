@@ -157,8 +157,8 @@ a, a:visited {
   border: 1px solid var(--border);
   border-radius: 5px;
   z-index: 1000;
-  overflow: hidden;
   overflow-y: scroll;
+  overflow: hidden;
   max-width: 90%;
   max-height: 90%;
 }
@@ -317,6 +317,7 @@ a, a:visited {
 
 .filter {
   display: flex;
+  align-items: start;
   border: 1px solid var(--border);
   background-color: var(--table_row1);
   border-radius: 5px;
