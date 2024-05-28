@@ -44,7 +44,7 @@ class Library {
             if ($stmt->rowCount() > 0) {
                 $this->result["code"] = QUERY_OK; 
                 $this->result["msg"] = QUERY_OK_MSG;
-                $this->result["data"] = $stmt->fetchAll();
+                $this->result["data"] = $this->cleanResult($stmt->fetchAll());
             } else {
                 $this->result["code"] = QUERY_SIN_DATOS; 
                 $this->result["msg"] = QUERY_SIN_DATOS_MSG;
@@ -106,7 +106,7 @@ class Library {
             if ($stmt->rowCount() > 0) {
                 $this->result["code"] = QUERY_OK; 
                 $this->result["msg"] = QUERY_OK_MSG;
-                $this->result["data"] = $stmt->fetchAll();
+                $this->result["data"] = $this->cleanResult($stmt->fetchAll());
             } else {
                 $this->result["code"] = QUERY_SIN_DATOS; 
                 $this->result["msg"] = QUERY_SIN_DATOS_MSG;
@@ -129,7 +129,7 @@ class Library {
             if ($stmt->rowCount() > 0) {
                 $this->result["code"] = QUERY_OK; 
                 $this->result["msg"] = QUERY_OK_MSG;
-                $this->result["data"] = $stmt->fetchAll();
+                $this->result["data"] = $this->cleanResult($stmt->fetchAll());
             } else {
                 $this->result["code"] = QUERY_SIN_DATOS; 
                 $this->result["msg"] = QUERY_SIN_DATOS_MSG;
@@ -152,7 +152,7 @@ class Library {
             if ($stmt->rowCount() > 0) {
                 $this->result["code"] = QUERY_OK; 
                 $this->result["msg"] = QUERY_OK_MSG;
-                $this->result["data"] = $stmt->fetchAll();
+                $this->result["data"] = $this->cleanResult($stmt->fetchAll());
             } else {
                 $this->result["code"] = QUERY_SIN_DATOS; 
                 $this->result["msg"] = QUERY_SIN_DATOS_MSG;
@@ -163,5 +163,22 @@ class Library {
         }
 
         return $this->result;
+    }
+
+    /**
+     * Borra los valores numéricos del las respuestas, reduciendo a la mitad todos los datos
+     *
+     */
+    private function cleanResult($arr) {
+        foreach ($arr as $mainKey => $value) {
+            foreach ($value as $key => $field) {
+                if (is_numeric($key)) {
+                    unset($arr[$mainKey][$key]);
+                }
+            }
+
+        }
+
+        return $arr;
     }
 }

@@ -157,7 +157,9 @@ a, a:visited {
   border: 1px solid var(--border);
   border-radius: 5px;
   z-index: 1000;
+  overflow: hidden;
   overflow-y: scroll;
+  max-width: 90%;
   max-height: 90%;
 }
 

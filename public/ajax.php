@@ -16,12 +16,20 @@ if (!empty($post['accion'])) {
             $list = $lib->getPersonalLibrary($post["id"],$post["filter"]);
             response($list);
             break;
+        case 'updateBook':
+            $list = $lib->updateBook($post["id"],$post["data"]);
+            response($list);
+            break;
         case 'getStorage':
             $list = $lib->getStorage();
             response($list);
             break;
-        case 'updateBook':
-            $list = $lib->updateBook($post["id"],$post["data"]);
+        case 'getFormat':
+            $list = $lib->getFormat();
+            response($list);
+            break;
+        case 'getGenre':
+            $list = $lib->getGenre();
             response($list);
             break;
         default: 

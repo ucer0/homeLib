@@ -113,17 +113,17 @@ export default {
             </div>
             <div>
                 <label for="price">Precio:</label>
-                <input type="text" v-model="data.price" name="price" :disabled="isDisabled" class="inputLimit" @input="data.price = data.price.replace(/[^0-9.]/g,'')">
+                <input type="text" v-model="data.price" name="price" :disabled="isDisabled" maxlength="6" size="6" @input="data.price = data.price.replace(/[^0-9]/g,'')">
             </div>
             <div>
-                <label for="price">Localización:</label>
-                <select name="" id="" :disabled="isDisabled">
+                <label for="storage">Localización:</label>
+                <select v-model="data.id_storage" name="storage" id="" :disabled="isDisabled">
                     <option :value="data.id_storage" selected hidden>{{ data.name_storage }}</option>
                     <option v-for="room in dataStorage" :value="room.id_storage">
                         {{ room.name_storage }}
                     </option>
                 </select>
-                <input type="text" v-model="data.shelf" :disabled="isDisabled" class="inputLimit">
+                <input type="text" v-model="data.shelf" :disabled="isDisabled" maxlength="6" size="6">
             </div>
             <div>
                 <label for="lent">¿Prestado?</label>
