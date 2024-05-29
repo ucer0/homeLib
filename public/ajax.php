@@ -24,6 +24,29 @@ if (!empty($post['accion'])) {
             $list = $lib->updateBook($post["id"],$post["data"]);
             response($list);
             break;
+
+        // ----------------------------
+        // --- FUNCIONES DE USUARIO ---
+        // ----------------------------
+        case 'getUser':
+            $list = $lib->getUser($post["id"]);
+            response($list);
+            break;   
+        case 'updateUser':
+            $list = $lib->updateUser($post["id"],$post["data"],$post["dataPwd"]);
+            response($list);
+            break;
+        case 'getDownloadableLibrary':
+            $list = $lib->getDownloadableLibrary($post["id"]);
+            response($list);
+            break;
+        case 'exportBackup':
+            $list = $lib->exportBackup($post["id"]);
+            response($list);
+            break;
+        // -----------------------------
+        // --- FUNCIONES PARA SELECT ---
+        // -----------------------------
         case 'getStorage':
             $list = $lib->getStorage();
             response($list);

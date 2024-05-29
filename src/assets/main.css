@@ -158,9 +158,14 @@ a, a:visited {
   border-radius: 5px;
   z-index: 1000;
   overflow-y: scroll;
-  overflow: hidden;
+  /* overflow: hidden; */
   max-width: 90%;
   max-height: 90%;
+}
+@media only screen and (max-width: 650px) {
+  .floatingForm {
+      width: 80%;
+  }
 }
 
 .floatingForm_bg {
@@ -205,64 +210,6 @@ a, a:visited {
   background-color: var(--table_header) !important;
 }
 
-/* -------------------- */
-/* - ESPECIFICACIONES - */
-/* -------------------- */
-.addSpecs {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.addSpecs button {
-  padding: 5px;
-  margin: 1px;
-  border: 1px solid var(--border);
-}
-
-.specsAux {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.specsContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0;
-}
-
-.specs {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--border);
-  background-color: var(--spec_bg);
-  font-size: small;
-  /* margin: 2px; */
-  max-height: 0px;
-  width: 100%;
-}
-
-.specsBtn {
-  display: flex;
-  align-items: center;
-  background-color: var(--button2);
-  max-height: 0px;
-}
-
-/* ---------------- */
-/* - FILAS NUEVAS - */
-/* ---------------- */
-.newRow {
-  border-top: 15px solid var(--border);
-}
-
-/* Hace override para que el estilo anterior solo lo tenga la primera instancia. 
-  No hay otra forma de hacer esto, ya lo siento. */
-.newRow ~ .newRow{
-  border-top: 1px solid var(--border);
-}
-
 /* ----------------- */
 /* - MENSAJE ERROR - */
 /* ----------------- */
@@ -301,9 +248,14 @@ a, a:visited {
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
 }
-
-.regsPag {
-  text-align: right;
+@media only screen and (max-width: 960px) {
+  .pagination {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    /* align-items: center; */
+    justify-content: center;
+  }
 }
 
 /* ----------- */
@@ -317,9 +269,15 @@ a, a:visited {
 
 .filter {
   display: flex;
-  align-items: start;
+  /* align-items: start; */
   border: 1px solid var(--border);
   background-color: var(--table_row1);
   border-radius: 5px;
   flex-direction: column;
+}
+
+.filter__input {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }

@@ -47,8 +47,8 @@ export default {
             } else {
                 return this.data.filter((row) =>
                     row['isbn'].toString().includes(this.searchInput) ||
-                    row['author'].toString().includes(this.searchInput) ||
-                    row['title'].toString().includes(this.searchInput) ||
+                    row['author'].toString().toLowerCase().includes(this.searchInput.toLowerCase()) ||
+                    row['title'].toString().toLowerCase().includes(this.searchInput.toLowerCase()) ||
                     row['year'].toString().includes(this.searchInput) 
                 );  
             }
@@ -56,12 +56,10 @@ export default {
         // --- PAGINACIÓN ---
         pageCount(){
             return Math.ceil(this.filteredData.length/this.rowsPerPage);
-            // return Math.ceil(this.data.length/this.rowsPerPage);
         },
         paginatedData(){
             const start = this.pageNumber * this.rowsPerPage;
-            const end = start + this.rowsPerPage;
-            // return this.data.slice(start, end);
+            const end = parseInt(start) + parseInt(this.rowsPerPage);
             return this.filteredData.slice(start, end);
         },
         // ------------------
@@ -94,6 +92,7 @@ export default {
                 this.data = [];
             }
         },
+        // ------------------
 
         // --- PAGINACIÓN ---
         nextPage(){
@@ -128,7 +127,7 @@ export default {
                 <div>Mostrando <b>{{ paginatedData.length }}</b> resultados de <b>{{ filteredData.length }}</b></div>
                 <div class="pagination">
                     <!-- BUSCADOR -->
-                    <div class="searchBox ">
+                    <div>
                         <input class="searchBox--input" type="text" v-model="searchInput" placeholder="Busca por ISBN, Título, Autor o año"/>
                     </div>
                     <!-- -------- -->
@@ -139,7 +138,7 @@ export default {
                         <button type="button" :disabled="pageNumber >= pageCount -1" @click="nextPage">></button>
                         <button type="button" :disabled="pageNumber >= pageCount -1" @click="pageNumber = pageCount-1">>></button>
                     </div>
-                    <div class="regsPag">
+                    <div>
                         <span>Nº de registros por pág. </span>
                         <select v-model="rowsPerPage">
                             <option value="5">5</option>

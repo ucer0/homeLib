@@ -161,102 +161,104 @@ export default {
             </div>
 
             <!-- CAMPOS DEL LIBRO -->
-            <h3 v-if="!bookNotClicked">Campos Genéricos</h3>
-            <div class="filter" v-if="!bookNotClicked">
-                <span style="color: red; font-size:x-small" >* Campos requeridos</span>
-                <div>
-                    <label for="isbn">ISBN<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['isbn']" name="isbn" maxlength="13" size="13" @input="saveInput['isbn'] = numberCheck(saveInput['isbn'])" required>
-                </div>
-                <div>
-                    <label for="title">Título<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['title']" name="title" required>
-                </div>
-                <div>
-                    <label for="subtitle">Subtítulo:</label>
-                    <input type="text" v-model="saveInput['subtitle']" name="subtitle">
-                </div>
-                <div>
-                    <label for="author">Autor<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['author']" name="author" required>
-                </div>
-                <div>
-                    <label for="coauthor">Coautor:</label>
-                    <input type="text" v-model="saveInput['coauthor']" name="coauthor" required>
-                </div>
-                <div>
-                    <label for="editor">Editorial<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['editor']" name="editor" required>
-                </div>
-                <div>
-                    <label for="edition">Nº Edición<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['edition']" name="edition" min="1" size="2" @input="saveInput['edition'] = numberCheck(saveInput['edition'])" required>
-                </div>
-                <div>
-                    <label for="year">Año Publicación Original<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['year']" name="year" min="1" maxlength="4" size="4" @input="saveInput['year'] = numberCheck(saveInput['year'])" required>
-                </div>
-                <div>
-                    <label for="pages">Nº Páginas<span style="color: red" >*</span>:</label>
-                    <input type="text" v-model="saveInput['pages']" name="pages" min="1" maxlength="4" size="4" @input="saveInput['pages'] = numberCheck(saveInput['pages'])" required>
-                </div>
-                <div>
-                    <label for="format">Formato<span style="color: red" >*</span>:</label>
-                    <select v-model="saveInput['id_format']" name="format" id="" >
-                        <option v-for="room in dataFormat" :value="room.id_format">
-                            {{ room.name_format }}
-                        </option>
-                    </select>
-                </div>
-                <div>
-                    <label for="genre">Género<span style="color: red" >*</span>:</label>
-                    <select v-model="saveInput['id_genre']" name="genre" id="" >
-                        <option v-for="room in dataGenre" :value="room.id_genre">
-                            {{ room.name_genre }}
-                        </option>
-                    </select>
+            <div>
+                <h3 v-if="!bookNotClicked">Campos Genéricos</h3>
+                <div class="filter" v-if="!bookNotClicked">
+                    <span style="color: red; font-size:x-small" >* Campos requeridos</span>
+                    <div class="filter__input">
+                        <label for="isbn">ISBN<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['isbn']" name="isbn" maxlength="13" size="13" @input="saveInput['isbn'] = numberCheck(saveInput['isbn'])" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="title">Título<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['title']" name="title" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="subtitle">Subtítulo:</label>
+                        <input type="text" v-model="saveInput['subtitle']" name="subtitle">
+                    </div>
+                    <div class="filter__input">
+                        <label for="author">Autor<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['author']" name="author" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="coauthor">Coautor:</label>
+                        <input type="text" v-model="saveInput['coauthor']" name="coauthor" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="editor">Editorial<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['editor']" name="editor" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="edition">Nº Edición<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['edition']" name="edition" min="1" size="2" @input="saveInput['edition'] = numberCheck(saveInput['edition'])" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="year">Año Publicación Original<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['year']" name="year" min="1" maxlength="4" size="4" @input="saveInput['year'] = numberCheck(saveInput['year'])" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="pages">Nº Páginas<span style="color: red" >*</span>:</label>
+                        <input type="text" v-model="saveInput['pages']" name="pages" min="1" maxlength="4" size="4" @input="saveInput['pages'] = numberCheck(saveInput['pages'])" required>
+                    </div>
+                    <div class="filter__input">
+                        <label for="format">Formato<span style="color: red" >*</span>:</label>
+                        <select v-model="saveInput['id_format']" name="format" id="" >
+                            <option v-for="room in dataFormat" :value="room.id_format">
+                                {{ room.name_format }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="filter__input">
+                        <label for="genre">Género<span style="color: red" >*</span>:</label>
+                        <select v-model="saveInput['id_genre']" name="genre" id="" >
+                            <option v-for="room in dataGenre" :value="room.id_genre">
+                                {{ room.name_genre }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
             <!-- CAMPOS PERSONALES -->
-            <h3 v-if="!bookNotClicked">Campos Personales</h3>
-            <div class="filter" v-if="!bookNotClicked">
-                <div>
-                    <label for="dateBought">Fecha de Compra:</label>
-                    <input type="date" v-model="saveInput['dateBought']" name="dateBought">
-                </div>
-                <div>
-                    <label for="price">Precio:</label>
-                    <input type="text" v-model="saveInput['price']" name="price" maxlength="6" size="6" @input="saveInput['price'] = saveInput['price'].replace(/[^0-9.]/g,'')">
-                </div>
-                <div>
-                    <label for="storage">Localización:</label>
-                    <select v-model="saveInput['id_storage']" name="storage" id="" >
-                        <option v-for="room in dataStorage" :value="room.id_storage">
-                            {{ room.name_storage }}
-                        </option>
-                    </select>
-                    <input type="text" v-model="saveInput['shelf']" maxlength="6" size="6">
-                </div>
-                <div>
-                    <label for="lent">¿Prestado?</label>
-                    <input type="checkbox" v-model="saveInput['lent']" :true-value="1" :false-value="0">
-                    <div v-if="saveInput['lent']">
-                        <div>
-                            <label for="lent_who">Persona:</label>
-                            <input type="text" v-model="saveInput['lent_who']" name="lent_who" >
-                        </div>
-                        <div>
-                            <label for="lent_who">Fecha:</label>
-                            <input type="date" v-model="saveInput['lent_when']" name="lent_when">
-                        </div>
+            <div>
+                <h3 v-if="!bookNotClicked">Campos Personales</h3>
+                <div class="filter" v-if="!bookNotClicked">
+                    <div class="filter__input">
+                        <label for="dateBought">Fecha de Compra:</label>
+                        <input type="date" v-model="saveInput['dateBought']" name="dateBought">
+                    </div>
+                    <div class="filter__input">
+                        <label for="price">Precio:</label>
+                        <input type="text" v-model="saveInput['price']" name="price" maxlength="6" size="6" @input="saveInput['price'] = saveInput['price'].replace(/[^0-9.]/g,'')">
+                    </div>
+                    <div class="filter__input">
+                        <label for="storage">Localización:</label>
+                        <select v-model="saveInput['id_storage']" name="storage" id="" >
+                            <option v-for="room in dataStorage" :value="room.id_storage">
+                                {{ room.name_storage }}
+                            </option>
+                        </select>
+                        <input type="text" v-model="saveInput['shelf']" maxlength="6" size="6">
+                    </div>
+                    <div class="filter__input">
+                        <label for="lent">¿Prestado?</label>
+                        <input type="checkbox" v-model="saveInput['lent']" :true-value="1" :false-value="0">
+                    </div>
+                    <div v-if="saveInput['lent']" class="filter__input">
+                        <label for="lent_who">Persona:</label>
+                        <input type="text" v-model="saveInput['lent_who']" name="lent_who" >
+                    </div>
+                    <div v-if="saveInput['lent']" class="filter__input">
+                        <label for="lent_who">Fecha:</label>
+                        <input type="date" v-model="saveInput['lent_when']" name="lent_when">
                     </div>
                 </div>
-            </div>
 
-            <div v-if="!bookNotClicked">
-                <button v-if="bookFound" type="button" @click="this.saveBook(saveInput,false)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
-                <button v-else type="button" @click="this.saveBook(saveInput,true)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
+                <div v-if="!bookNotClicked">
+                    <button v-if="bookFound" type="button" @click="this.saveBook(saveInput,false)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
+                    <button v-else type="button" @click="this.saveBook(saveInput,true)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
+                </div>
             </div>
         </form>
     </div>
@@ -274,31 +276,14 @@ export default {
         font-size: inherit; */
     }
 
-    .primaryInfo {
-        display: flex;
+    #saveBookForm {
         flex-direction: row;
+        align-items: start;
     }
-    .primaryInfo--cover {
-        border-radius: 5px;
-    }
-
-    .primaryInfo__data {
-        display: flex;
-        flex-direction: column;
-    }
-    .primaryInfo__data--aux{
-        padding-top: 0px;
-    }
-    .primaryInfo__data--title {
-        margin: 0 auto;
-    }
-
-    .buttonDiv {
-        display: flex;
-        justify-content: center;
-    }
-
-    .inputLimit {
-        width: 6ch;
+    @media only screen and (max-width: 650px) {
+        #saveBookForm {
+            flex-direction: column;
+            align-items: center;
+        }
     }
 </style>

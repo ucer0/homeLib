@@ -2,16 +2,22 @@
 import axios from 'axios';
 export default {
     name: "Account",
-    // props: ["user","book"],
+    props: ["user"],
     data() {
         return {
             code: "",
             msg: "",
-            data: {},
-            saveInput: {},
-            saveDisabled: true,
+            csv: "",
+            backup: "",
+            dataUser: {},
+            saveInput: {
+                password: "",
+                password2: ""
+            },
             showMsg: false,
             isDisabled: true,
+            // Devuelve la hora en este formato "YYYY-MM-DD HH:mm:ss"
+            currentDate: (new Date().toISOString().slice(0,10)),
         }
     },
 
@@ -30,41 +36,94 @@ export default {
     methods: {
 
         // --- MÉTODOS CON CONEXIÓN CON BBDD ---
-        // Son muchos pero prefiero tenerlos separados y ordenaditos antes que uno kilométrico
         async ajax(params) {
             const res = await axios.post('ajax.php', params);
             return res.data ? res.data : false;
         },
 
-        async getStorage() {
-            this.dataStorage = [];
+        async getUser() {
+            this.dataUser = [];
             
             const res = await this.ajax({
-                accion: 'getStorage',
+                accion: 'getUser',
+                id: this.user
             });
 
             if (typeof res.data !== 'undefined') {
-                this.dataStorage = res.data;
+                this.dataUser = res.data;
             } else {
-                this.dataStorage = [];
+                this.dataUser = [];
             }
         },
 
-        async updateBook(id,arr) {
+        async updateUser(arr) {
             const res = await this.ajax({
-                accion: 'updateBook',
-                id: id,
-                data: arr
+                accion: 'updateUser',
+                id: this.user,
+                data: this.dataUser,
+                dataPwd: arr["password"]
             });
             this.code = res.code;
             this.msg = res.msg;
             this.showMsg = true;
+
+            if (this.code == "SU0100") {
+                this.isDisabled = true;
+            }
+        },
+
+        async getDownloadableLibrary() {
+            this.dataUser = [];
+            
+            const res = await this.ajax({
+                accion: 'getDownloadableLibrary',
+                id: this.user
+            });
+
+            if (typeof res.data !== 'undefined') {
+                this.csv = res.data;
+            } else {
+                this.csv = "";
+            }
+        },
+
+        async exportBackup() {
+            this.dataUser = [];
+            
+            const res = await this.ajax({
+                accion: 'exportBackup',
+                id: this.user
+            });
+
+            if (typeof res.data !== 'undefined') {
+                this.backup = res.data;
+            } else {
+                this.backup = "";
+            }
+        },
+        // ----------------------
+        
+        isDataValid() {
+            if (this.saveInput['password']==this.saveInput['password2'] 
+                && this.saveInput['password'].length >=8
+                && this.dataUser.name_user.length > 4) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        formatDate() {
+            var options = {year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(this.dataUser.signupDate).toLocaleDateString('es-ES',options);
         }
 
     },
 
     created() {
-        this.getStorage();
+        this.getUser();
+        this.getDownloadableLibrary();
+        this.exportBackup();
     }
 }
 </script>
@@ -80,12 +139,49 @@ export default {
 
     <div class="container"> 
         <form>
-            <h2>Añadir libro a partir de ISBN</h2>
             <div>
-                <button type="button" @click="">Añadir</button>
+                <h3>Datos de la Cuenta</h3>
+                <p>Cuenta creada el {{ formatDate() }}</p>
+                <div class="filter" >
+                    <div class="filter__input">
+                        <label for="name_user">Usuario:</label>
+                        <input type="text" v-model="dataUser.name_user" name="name_user" :disabled="isDisabled" maxlength="20" @input="dataUser.name_user = dataUser.name_user.replace(/[^0-9a-z]/g,'')">
+                    </div>
+                    <div class="filter__input">
+                        <label for="mail">Mail:</label>
+                        <input type="mail" v-model="dataUser.mail" name="mail" :disabled="isDisabled">
+                    </div>
+                    <div v-if="!isDisabled" class="filter__input">
+                        <label for="pass">Contraseña:</label>
+                        <input type="password" v-model="saveInput['password']" name="pass" :disabled="isDisabled">
+                    </div>
+                    <div v-if="!isDisabled" class="filter__input">
+                        <label for="pass">Repetir:</label>
+                        <input type="password" v-model="saveInput['password2']" name="pass" :disabled="isDisabled">
+                    </div>
+                </div>
+                <div class="buttonDiv">
+                    <button type="button" @click="isDisabled=!isDisabled">Editar Datos</button>
+                    <button type="button" @click="updateUser(saveInput)" class="updateButton" :disabled="isDisabled || !isDataValid()">Guardar Cambios</button>
+                </div>
             </div>
 
-            <button type="button" @click="">Editar</button>
+            <div>
+                <h3>Exportar Biblioteca Personal</h3>
+                <p>Para tener toda tu biblioteca de forma local</p>
+                <div>
+                    <a type="button" :download="'homeLib_'+currentDate+'.csv'" :href="'data:text/csv;base64,'+csv" class="updateButton" >Exportar Datos</a>
+                </div>
+            </div>
+
+            <div>
+                <h3>Copias de Seguridad</h3>
+                <p>Importación y exportación de copia de seguridad personal</p>
+                <div>
+                    <a type="button" :download="'backup_'+currentDate+'.csv'" :href="'data:text/csv;base64,'+backup" >Exportar Copia</a>
+                    <button type="button" @click="">Importar Copia</button>
+                </div>
+            </div>
         </form>
     </div>
 </template>

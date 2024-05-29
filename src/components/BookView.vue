@@ -107,15 +107,15 @@ export default {
         
         <!-- CAMPOS EDITABLES -->
         <div class="filter">
-            <div>
+            <div class="filter__input">
                 <label for="dateBought">Fecha de Compra:</label>
                 <input type="date" v-model="data.dateBought" name="dateBought" :disabled="isDisabled">
             </div>
-            <div>
+            <div class="filter__input">
                 <label for="price">Precio:</label>
                 <input type="text" v-model="data.price" name="price" :disabled="isDisabled" maxlength="6" size="6" @input="data.price = data.price.replace(/[^0-9.]/g,'')">
             </div>
-            <div>
+            <div class="filter__input">
                 <label for="storage">Localización:</label>
                 <select v-model="data.id_storage" name="storage" id="" :disabled="isDisabled">
                     <option :value="data.id_storage" selected hidden>{{ data.name_storage }}</option>
@@ -125,19 +125,17 @@ export default {
                 </select>
                 <input type="text" v-model="data.shelf" :disabled="isDisabled" maxlength="6" size="6">
             </div>
-            <div>
+            <div class="filter__input">
                 <label for="lent">¿Prestado?</label>
                 <input type="checkbox" v-model="data.lent" :true-value="1" :false-value="0" :disabled="isDisabled">
-                <div v-if="data.lent">
-                    <div>
-                        <label for="lent_who">Persona:</label>
-                        <input type="text" v-model="data.lent_who" name="lent_who" :disabled="isDisabled">
-                    </div>
-                    <div>
-                        <label for="lent_who">Fecha:</label>
-                        <input type="date" v-model="data.lent_when" name="lent_when" :disabled="isDisabled">
-                    </div>
-                </div>
+            </div>
+            <div v-if="data.lent" class="filter__input">
+                <label for="lent_who">Persona:</label>
+                <input type="text" v-model="data.lent_who" name="lent_who" :disabled="isDisabled">
+            </div>
+            <div v-if="data.lent" class="filter__input">
+                <label for="lent_who">Fecha:</label>
+                <input type="date" v-model="data.lent_when" name="lent_when" :disabled="isDisabled">
             </div>
         </div>
         <div class="buttonDiv">
@@ -163,6 +161,14 @@ export default {
         display: flex;
         flex-direction: row;
     }
+    @media only screen and (max-width: 650px) {
+        .primaryInfo {
+            display: flex;
+            flex-direction: column !important;
+            text-align: center;
+            align-items: center;
+        }
+    }
     .primaryInfo--cover {
         border-radius: 5px;
     }
@@ -176,14 +182,11 @@ export default {
     }
     .primaryInfo__data--title {
         margin: 0 auto;
+        max-width: 250px;
     }
 
     .buttonDiv {
         display: flex;
         justify-content: center;
-    }
-
-    .inputLimit {
-        width: 6ch;
     }
 </style>

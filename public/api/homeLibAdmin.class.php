@@ -60,17 +60,6 @@ class Library {
     public function saveBook($userID,$dataArray,$isNew) {
         $this->result = [];
 
-        // // Si faltan datos los inicializo para que no de Warnings
-        // if (!empty($dataArray["lent"]) || !isset($dataArray["lent"])) {
-        //     $dataArray["lent"] = 0;
-        // }
-        // if (!empty($dataArray["lent_who"]) || !isset($dataArray["lent_who"])) {
-        //     $dataArray["lent_who"] = " ";
-        // }
-        // if (!empty($dataArray["lent_when"]) || !isset($dataArray["lent_when"])) {
-        //     $dataArray["lent_when"] = " ";
-        // }
-
         // QUITAR LO DE isNew Y HACER EL CHECKEO SIEMPRE DE SI EXISTE AL GUARDAR EL LIBRO, NO ANTES !!!!!!!!
         if ($isNew) {
             $query = "INSERT INTO library.book (isbn,title,subtitle,author,coauthor,editor,edition,year,pages,id_format,id_genre,pic) 
@@ -165,6 +154,128 @@ class Library {
         return $this->result;
     }
 
+    // ----------------------------
+    // --- FUNCIONES DE USUARIO ---
+    // ----------------------------
+    public function getUser($id) {
+        $this->result = [];
+
+        $query = "SELECT name_user, mail, signupDate FROM library.user WHERE id_user=:id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":id", $id);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_OK_MSG;
+                $this->result["data"] = $stmt->fetch();
+            } else {
+                $this->result["code"] = QUERY_SIN_DATOS; 
+                $this->result["msg"] = QUERY_SIN_DATOS_MSG;
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
+    public function updateUser($userID,$dataArray,$pwd) {
+        $this->result = [];
+        $query = "UPDATE library.user 
+                    SET name_user=:name_user, mail=:mail, password=MD5(:password)
+                    WHERE id_user=:userID";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":userID", $userID);
+        $stmt->bindValue(":name_user", $dataArray["name_user"]);
+        $stmt->bindValue(":mail", $dataArray["mail"] ?? null);
+        $stmt->bindValue(":password", $pwd);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_UPDATE_USER_MSG;
+            } else {
+                $this->result["code"] = QUERY_SIN_DATOS; 
+                $this->result["msg"] = QUERY_NO_UPDATE_MSG;
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
+    public function getDownloadableLibrary($id) {
+        $this->result = [];
+
+        $query = "SELECT b.isbn AS 'ISBN', b.title AS 'Título', b.subtitle AS 'Subtítulo', b.author AS 'Autor', b.coauthor AS 'Coautor', b.editor AS 'Editorial', 
+                    b.edition AS 'Edición', b.year AS 'Año', b.pages AS 'Páginas', f.name_format AS 'Formato', g.name_genre AS 'Género', bp.dateBought AS 'Fecha Compra', 
+                    bp.price AS 'Precio', s.name_storage AS 'Localización', bp.shelf AS 'Estante', bp.lent AS 'Prestado', bp.lent_who AS 'Quién Prestado', 
+                    bp.lent_when AS 'Cuándo Prestado',b.pic AS 'Portada'
+                    FROM library.book as b, library.book_personal as bp, library.format as f, library.genre as g, library.storage as s  
+                    WHERE bp.id_user = :userID AND b.id_book = bp.id_book
+                        AND bp.id_storage = s.id_storage
+                        AND b.id_format = f.id_format
+                        AND b.id_genre = g.id_genre";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":userID", $id);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_OK_MSG;
+                $this->result["data"] = $this->exportArrayToCSV($this->cleanResult($stmt->fetchAll()));
+            } else {
+                $this->result["code"] = QUERY_SIN_DATOS; 
+                $this->result["msg"] = QUERY_SIN_DATOS_MSG;
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
+    public function exportBackup($id) {
+        $this->result = [];
+
+        $query = "SELECT id_user, id_book, dateBought, price, id_storage, shelf, lent, lent_who, lent_when 
+                    FROM library.book_personal WHERE id_user=:userID";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":userID", $id);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_OK_MSG;
+                $this->result["data"] = $this->exportArrayToCSV($this->cleanResult($stmt->fetchAll()));
+            } else {
+                $this->result["code"] = QUERY_SIN_DATOS; 
+                $this->result["msg"] = QUERY_SIN_DATOS_MSG;
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
+    public function importBackup($id,$data) {
+        
+    }
+
+    // -----------------------------
+    // --- FUNCIONES PARA SELECT ---
+    // -----------------------------
+
     public function getStorage() {
         $this->result = [];
 
@@ -234,6 +345,10 @@ class Library {
         return $this->result;
     }
 
+    // ----------------------------
+    // --- FUNCIONES AUXILIARES ---
+    // ----------------------------
+
     /**
      * Borra los valores numéricos del las respuestas, reduciendo a la mitad todos los datos
      *
@@ -288,5 +403,24 @@ class Library {
         $isbn13 = substr($isbn13,-1).(10-($lastDigit%10));
 
         return $isbn13;
+    }
+
+    /**
+     * Transforma un Array en un .csv encriptado en base64
+     * 
+     */
+    private function exportArrayToCSV($arr) {
+        $csv = fopen('php://memory','rw+');
+
+        fputcsv($csv, array_keys($arr[0]), ";");
+        foreach ($arr as $key => $value) {
+            fputcsv($csv, $value, ";");
+        }
+
+        rewind($csv);
+        $csvContent = trim(stream_get_contents($csv));
+        fclose($csv);
+
+        return base64_encode($csvContent);
     }
 }
