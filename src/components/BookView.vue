@@ -160,13 +160,14 @@ export default {
     .primaryInfo {
         display: flex;
         flex-direction: row;
+        text-align: right;
+        align-items: center;
     }
     @media only screen and (max-width: 650px) {
         .primaryInfo {
             display: flex;
             flex-direction: column !important;
             text-align: center;
-            align-items: center;
         }
     }
     .primaryInfo--cover {

@@ -90,8 +90,8 @@ class Library {
         $bookID = $stmt->fetch()["id_book"];
 
         // Añadimos el libro y los datos personales a la cuenta
-        $query = "INSERT INTO library.book_personal (id_user,id_book,dateBought,price,id_storage,shelf,lent,lent_who,lent_when)
-                    VALUES (:userID,:bookID,:dateBought,:price,:id_storage,:shelf,:lent,:lent_who,:lent_when)";
+        $query = "INSERT INTO library.book_personal (id_user,id_book,dateBought,price,id_storage,shelf,lent,lent_who,lent_when,_dateAdded)
+                    VALUES (:userID,:bookID,:dateBought,:price,:id_storage,:shelf,:lent,:lent_who,:lent_when,CURDATE())";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(":userID", $userID);
@@ -245,7 +245,7 @@ class Library {
     public function exportBackup($id) {
         $this->result = [];
 
-        $query = "SELECT id_user, id_book, dateBought, price, id_storage, shelf, lent, lent_who, lent_when 
+        $query = "SELECT id_book, dateBought, price, id_storage, shelf, lent, lent_who, lent_when, _dateAdded
                     FROM library.book_personal WHERE id_user=:userID";
         
         $stmt = $this->db->prepare($query);
@@ -268,8 +268,29 @@ class Library {
         return $this->result;
     }
 
-    public function importBackup($id,$data) {
-        
+    function importBackup($id,$dataArray) {
+        $this->result = [];
+        echo '<pre>'; echo print_r($dataArray); echo '</pre>';
+        if ($dataArray) {
+            $fields = implode(",",$dataArray[0]);
+            $dataArray = array_shift($dataArray);
+
+            $query = "INSERT INTO library.book_personal (id_user,$fields)
+                        VALUES (?,?,?,?,?,?,?,?,?) WHERE id_user=$id";
+            $stmt = $this->db->prepare($query);
+            foreach ($dataArray as $key => $value) {
+                $stmt->bindParam($id,$value[0],$value[1],$value[2],$value[3],$value[4],$value[5],$value[6],$value[7],$value[8]);
+                $stmt->execute();
+            }
+
+            $this->result["code"] = QUERY_OK; 
+            $this->result["msg"] = QUERY_IMPORT_MSG;
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_IMPORT_MSG;
+        }
+
+        return $this->result;
     }
 
     // -----------------------------
@@ -422,5 +443,5 @@ class Library {
         fclose($csv);
 
         return base64_encode($csvContent);
-    }
+    }    
 }

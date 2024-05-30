@@ -44,6 +44,11 @@ if (!empty($post['accion'])) {
             $list = $lib->exportBackup($post["id"]);
             response($list);
             break;
+        case 'importBackup':
+            $list = $lib->importBackup($post["id"],$post["data"]);
+            response($list);
+            break;
+            
         // -----------------------------
         // --- FUNCIONES PARA SELECT ---
         // -----------------------------

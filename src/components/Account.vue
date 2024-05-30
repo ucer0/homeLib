@@ -101,6 +101,42 @@ export default {
                 this.backup = "";
             }
         },
+
+        async importBackup() {
+            // ---
+            alert("WIP, aún no funciona!");
+            return;
+            // ---
+            let csv;
+            let file = document.getElementById("importFile").files[0];
+            if (/(\.csv)$/i.exec(file.name)) {
+                let reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = function() {
+                    if (confirm("Importar esta copia de seguridad sobreescribirá los datos actuales\n¿Quiere continuar?")) {
+                        csv = reader.result;
+                    } else {
+                        csv = false;
+                    }
+                };
+            } else {
+                alert("Archivo Inválido");
+                csv = false;
+            }
+
+            if (csv) {
+                console.log(csv);
+                const res = await this.ajax({
+                    accion: 'importBackup',
+                    id: this.user,
+                    data: csv
+                });
+
+                this.code = res.code;
+                this.msg = res.msg;
+                this.showMsg = true;    
+            };
+        },
         // ----------------------
         
         isDataValid() {
@@ -116,8 +152,7 @@ export default {
         formatDate() {
             var options = {year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(this.dataUser.signupDate).toLocaleDateString('es-ES',options);
-        }
-
+        },
     },
 
     created() {
@@ -179,7 +214,8 @@ export default {
                 <p>Importación y exportación de copia de seguridad personal</p>
                 <div>
                     <a type="button" :download="'backup_'+currentDate+'.csv'" :href="'data:text/csv;base64,'+backup" >Exportar Copia</a>
-                    <button type="button" @click="">Importar Copia</button>
+                    <input type="file" id="importFile" accept=".csv" @change="importBackup()" style="display: none;">
+                    <button type="button" onclick="document.getElementById('importFile').click()">Importar Copia</button>
                 </div>
             </div>
         </form>
