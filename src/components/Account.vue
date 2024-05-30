@@ -16,6 +16,7 @@ export default {
             },
             showMsg: false,
             isDisabled: true,
+            isImportDisabled: true,
             // Devuelve la hora en este formato "YYYY-MM-DD HH:mm:ss"
             currentDate: (new Date().toISOString().slice(0,10)),
         }
@@ -102,40 +103,20 @@ export default {
             }
         },
 
-        async importBackup() {
-            // ---
-            alert("WIP, aún no funciona!");
-            return;
-            // ---
-            let csv;
-            let file = document.getElementById("importFile").files[0];
-            if (/(\.csv)$/i.exec(file.name)) {
-                let reader = new FileReader();
-                reader.readAsText(file);
-                reader.onload = function() {
-                    if (confirm("Importar esta copia de seguridad sobreescribirá los datos actuales\n¿Quiere continuar?")) {
-                        csv = reader.result;
-                    } else {
-                        csv = false;
-                    }
-                };
-            } else {
-                alert("Archivo Inválido");
-                csv = false;
-            }
-
-            if (csv) {
-                console.log(csv);
+        async importBackup(arr) {
+            if (confirm("Importar esta copia de seguridad sobreescribirá los datos actuales\n¿Quiere continuar?")) {
                 const res = await this.ajax({
                     accion: 'importBackup',
                     id: this.user,
-                    data: csv
+                    data: arr
                 });
 
                 this.code = res.code;
                 this.msg = res.msg;
-                this.showMsg = true;    
-            };
+                this.showMsg = true; 
+            } else {
+                this.isImportDisabled = true;
+            }
         },
         // ----------------------
         
@@ -153,6 +134,22 @@ export default {
             var options = {year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(this.dataUser.signupDate).toLocaleDateString('es-ES',options);
         },
+
+        getFile() {
+            let file = document.getElementById("importFile").files[0];
+            if (/(\.csv)$/i.exec(file.name)) {
+                let reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = () => {
+                    this.csvImport = reader.result;
+                    this.isImportDisabled = false;
+                };
+            } else {
+                alert("Archivo Inválido");
+                this.csvImport = false;
+                this.isImportDisabled = true;
+            }
+        }
     },
 
     created() {
@@ -212,10 +209,13 @@ export default {
             <div>
                 <h3>Copias de Seguridad</h3>
                 <p>Importación y exportación de copia de seguridad personal</p>
-                <div>
+                <div class="backupDiv">
                     <a type="button" :download="'backup_'+currentDate+'.csv'" :href="'data:text/csv;base64,'+backup" >Exportar Copia</a>
-                    <input type="file" id="importFile" accept=".csv" @change="importBackup()" style="display: none;">
-                    <button type="button" onclick="document.getElementById('importFile').click()">Importar Copia</button>
+                    <div>
+                        <label for="import">Archivo a importar:</label>
+                        <input type="file" name="import" id="importFile" accept=".csv" @change="getFile()">
+                    </div>
+                    <button type="button" @click="importBackup(this.csvImport)" :disabled="isImportDisabled">Importar Copia</button>
                 </div>
             </div>
         </form>
@@ -234,31 +234,14 @@ export default {
         font-size: inherit; */
     }
 
-    .primaryInfo {
-        display: flex;
-        flex-direction: row;
-    }
-    .primaryInfo--cover {
-        border-radius: 5px;
-    }
-
-    .primaryInfo__data {
+    .backupDiv {
         display: flex;
         flex-direction: column;
-    }
-    .primaryInfo__data--aux{
-        padding-top: 0px;
-    }
-    .primaryInfo__data--title {
-        margin: 0 auto;
+        align-items: center;
     }
 
     .buttonDiv {
         display: flex;
         justify-content: center;
-    }
-
-    .inputLimit {
-        width: 6ch;
     }
 </style>

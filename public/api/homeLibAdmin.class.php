@@ -270,16 +270,33 @@ class Library {
 
     function importBackup($id,$dataArray) {
         $this->result = [];
-        echo '<pre>'; echo print_r($dataArray); echo '</pre>';
+        $dataArray = explode("\n",$dataArray);
+        foreach ($dataArray as $key => $row) {
+            $dataArray[$key] = explode(";",$row);
+        }
+
         if ($dataArray) {
             $fields = implode(",",$dataArray[0]);
-            $dataArray = array_shift($dataArray);
+            array_shift($dataArray);
 
             $query = "INSERT INTO library.book_personal (id_user,$fields)
-                        VALUES (?,?,?,?,?,?,?,?,?) WHERE id_user=$id";
+                        VALUES (:userID,:bookID,:dateBought,:price,:id_storage,:shelf,:lent,:lent_who,:lent_when,:_dateAdded) 
+                        ON DUPLICATE KEY UPDATE
+                            id_user=:userID,id_book=:bookID,dateBought=:dateBought,price=:price,id_storage=:id_storage,
+                            shelf=:shelf,lent=:lent,lent_who=:lent_who,lent_when=:lent_when,_dateAdded=:_dateAdded
+                        "; //WHERE id_user=:userID
             $stmt = $this->db->prepare($query);
             foreach ($dataArray as $key => $value) {
-                $stmt->bindParam($id,$value[0],$value[1],$value[2],$value[3],$value[4],$value[5],$value[6],$value[7],$value[8]);
+                $stmt->bindValue(":userID", $id);
+                $stmt->bindValue(":bookID", $value[0]);
+                $stmt->bindValue(":dateBought", $value[1]??null);
+                $stmt->bindValue(":price", $value[2]??null);
+                $stmt->bindValue(":id_storage", $value[3]??1);
+                $stmt->bindValue(":shelf", $value[4]?? "");
+                $stmt->bindValue(":lent", $value[5]??0);
+                $stmt->bindValue(":lent_who", $value[6]??null);
+                $stmt->bindValue(":lent_when", $value[7]??null);
+                $stmt->bindValue(":_dateAdded", $value[8]??null);
                 $stmt->execute();
             }
 
