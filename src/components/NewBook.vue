@@ -18,6 +18,7 @@ export default {
             bookFound: false,
             isbn: "",
             allDataRequired: false,
+            fetchingBook: false,
         }
     },
 
@@ -53,6 +54,24 @@ export default {
         async ajax(params) {
             const res = await axios.post('ajax.php', params);
             return res.data ? res.data : false;
+        },
+
+        async getBook(isbn) {
+            this.saveInput = {};
+            this.fetchingBook = true;
+
+            const res = await this.ajax({
+                accion: 'getBook',
+                isbn: isbn,
+            });
+
+            if (typeof res.data !== 'undefined') {
+                this.saveInput = res.data;
+            } else {
+                this.saveInput = {};
+                this.saveInput["isbn"] = isbn;
+            }
+            this.fetchingBook = false;
         },
 
         async saveBook(arr,isNew) {
@@ -147,23 +166,22 @@ export default {
             </div>
         </div>
     </Transition>
-
+    
     <div class="container"> 
-        <form id="saveBookForm">
-            <div v-if="bookNotClicked">
-                <h3>Añadir libro por ISBN</h3>
-                <div>
-                    <input type="text" :value="isbn" placeholder="ISBN-10 o ISBN-13">
-                    <button type="button" @click="bookNotClicked=false;">Añadir por ISBN</button>
-                </div>  
-                <h3>Añadir desde cero</h3>
-                <button type="button" @click="bookNotClicked=false;">Añadir libro desde cero</button>
-            </div>
+        <!-- OPCIONES INICIALES -->
+        <div v-if="bookNotClicked">
+            <h3>Añadir libro por ISBN</h3>
+            <div style="display: flex;">
+                <input type="text" placeholder="ISBN-10 o ISBN-13" v-model="saveInput['isbn']" class="isbnInput" maxlength="13" size="20" @input="saveInput['isbn'] = numberCheck(saveInput['isbn'])">
+                <button type="button" @click="getBook(saveInput['isbn']);bookNotClicked=false;">Añadir libro</button> <!-- VAMOS A ESTO!!!! -->
+            </div>  
+        </div>
 
+        <form id="saveBookForm" v-if="!bookNotClicked && !fetchingBook">
             <!-- CAMPOS DEL LIBRO -->
             <div>
-                <h3 v-if="!bookNotClicked">Campos Genéricos</h3>
-                <div class="filter" v-if="!bookNotClicked">
+                <h3>Campos Genéricos</h3>
+                <div class="filter">
                     <span style="color: red; font-size:x-small" >* Campos requeridos</span>
                     <div class="filter__input">
                         <label for="isbn">ISBN<span style="color: red" >*</span>:</label>
@@ -194,7 +212,7 @@ export default {
                         <input type="text" v-model="saveInput['edition']" name="edition" min="1" size="2" @input="saveInput['edition'] = numberCheck(saveInput['edition'])" required>
                     </div>
                     <div class="filter__input">
-                        <label for="year">Año Publicación Original<span style="color: red" >*</span>:</label>
+                        <label for="year">Año Publicación<span style="color: red" >*</span>:</label>
                         <input type="text" v-model="saveInput['year']" name="year" min="1" maxlength="4" size="4" @input="saveInput['year'] = numberCheck(saveInput['year'])" required>
                     </div>
                     <div class="filter__input">
@@ -222,8 +240,8 @@ export default {
             
             <!-- CAMPOS PERSONALES -->
             <div>
-                <h3 v-if="!bookNotClicked">Campos Personales</h3>
-                <div class="filter" v-if="!bookNotClicked">
+                <h3>Campos Personales</h3>
+                <div class="filter">
                     <div class="filter__input">
                         <label for="dateBought">Fecha de Compra:</label>
                         <input type="date" v-model="saveInput['dateBought']" name="dateBought">
@@ -255,12 +273,15 @@ export default {
                     </div>
                 </div>
 
-                <div v-if="!bookNotClicked">
+                <div>
                     <button v-if="bookFound" type="button" @click="this.saveBook(saveInput,false)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
-                    <button v-else type="button" @click="this.saveBook(saveInput,true)" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
+                    <button v-else type="button" @click="this.saveBook(saveInput,true);bookNotClicked=true;" class="updateButton" :disabled="!allDataRequired">Guardar Libro</button>
                 </div>
             </div>
         </form>
+        <div v-else-if="!bookNotClicked && fetchingBook">
+            <h3>⏳ Buscando Libro ⏳</h3>
+        </div>
     </div>
 </template>
 
@@ -274,6 +295,11 @@ export default {
         /* background: var(--bg);
         border: none;
         font-size: inherit; */
+    }
+
+    .isbnInput {
+        padding: 9px;
+        font-size: inherit;
     }
 
     #saveBookForm {

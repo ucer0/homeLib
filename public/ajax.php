@@ -16,6 +16,10 @@ if (!empty($post['accion'])) {
             $list = $lib->getPersonalLibrary($post["id"],$post["filter"]);
             response($list);
             break;
+        case 'getBook':
+            $list = $lib->getBook($post["isbn"]);
+            response($list);
+            break;
         case 'saveBook':
             $list = $lib->saveBook($post["id"],$post["data"],$post["isNew"]);
             response($list);
@@ -25,9 +29,9 @@ if (!empty($post['accion'])) {
             response($list);
             break;
 
-        // ----------------------------
-        // --- FUNCIONES DE USUARIO ---
-        // ----------------------------
+        // ---------------------------
+        // --- FUNCIONES DE CUENTA ---
+        // ---------------------------
         case 'getUser':
             $list = $lib->getUser($post["id"]);
             response($list);
@@ -49,9 +53,9 @@ if (!empty($post['accion'])) {
             response($list);
             break;
             
-        // -----------------------------
-        // --- FUNCIONES PARA SELECT ---
-        // -----------------------------
+        // -------------------------------
+        // --- FUNCIONES PARA DROPDOWN ---
+        // -------------------------------
         case 'getStorage':
             $list = $lib->getStorage();
             response($list);

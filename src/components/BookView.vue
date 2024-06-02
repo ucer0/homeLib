@@ -94,7 +94,7 @@ export default {
                     <p>{{ data.editor }}, {{ data.edition }}º Edición</p>
                 </div>
                 <div class="primaryInfo__data--aux">
-                    <p>Publición original: <i>{{ data.year }}</i></p>
+                    <p>Año Publición: <i>{{ data.year }}</i></p>
                     <p>Páginas: <i>{{ data.pages }}</i></p>
                     <p>ISBN: <i>{{ data.isbn }}</i></p>
                 </div>
@@ -140,7 +140,7 @@ export default {
         </div>
         <div class="buttonDiv">
                 <button type="button" @click="this.isDisabled=!this.isDisabled">Editar</button>
-                <button type="button" @click="this.updateBook(user,data)" class="updateButton" :disabled="isDisabled">Guardar Cambios</button>
+                <button type="button" @click="this.updateBook(user,data);this.isDisabled=!this.isDisabled" class="updateButton" :disabled="isDisabled">Guardar Cambios</button>
         </div>
     </form>
 </template>

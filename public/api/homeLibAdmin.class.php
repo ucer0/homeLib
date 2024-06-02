@@ -1,9 +1,11 @@
 <?php 
 
 namespace homeLibAdmin;
+use Book;
 
 // Icluimos el archivo de constantes
 require_once(__DIR__."/../config/constants.php");
+require_once("BookAPI.class.php");
 
 class Library {
 
@@ -35,7 +37,8 @@ class Library {
                     WHERE bp.id_user = :userID AND b.id_book = bp.id_book
                         AND bp.id_storage = s.id_storage
                         AND b.id_format = f.id_format
-                        AND b.id_genre = g.id_genre";
+                        AND b.id_genre = g.id_genre
+                    ORDER BY b.id_book DESC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(":userID", $id);
@@ -57,6 +60,48 @@ class Library {
         return $this->result;
     }
     
+    public function getBook($isbn) {
+        $this->result = [];
+
+        // Primero buscamos si existe en la base de datos
+        $query = "SELECT id_book, isbn, title, subtitle, author, coauthor, editor, edition, year, pages, id_format, id_genre, pic
+                    FROM library.book WHERE isbn=:isbn";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":isbn", $isbn);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                // Si existe, mandamos los datos directamente
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_OK_MSG;
+                $this->result["data"] = $stmt->fetch();
+            } else {
+                // Si no existe, lo buscamos por la API
+                $bookAPI = new Book();
+                $book = $bookAPI->getBookByISBN($isbn);
+
+                if (!empty($book)) {
+
+                    if (empty($book["pic"])) {
+                        $book["pic"] = $this->getPicFromISBN($isbn);
+                    }
+
+                    $this->result["code"] = QUERY_OK; 
+                    $this->result["msg"] = API_FOUND_MSG;
+                    $this->result["data"] = $book;
+                } else {
+                    $this->result["code"] = QUERY_SIN_DATOS; 
+                    $this->result["msg"] = API_NOT_FOUND_MSG;
+                }
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
     public function saveBook($userID,$dataArray,$isNew) {
         $this->result = [];
 
@@ -77,7 +122,7 @@ class Library {
             $stmt->bindValue(":pages", $dataArray["pages"]);
             $stmt->bindValue(":id_format", $dataArray["id_format"]);
             $stmt->bindValue(":id_genre", $dataArray["id_genre"]);
-            $stmt->bindValue(":pic", $this->getPicFromISBN($dataArray["isbn"]));
+            $stmt->bindValue(":pic", $dataArray["pic"] ?? $this->getPicFromISBN($dataArray["isbn"]));
 
             $stmt->execute();
         }
@@ -154,9 +199,9 @@ class Library {
         return $this->result;
     }
 
-    // ----------------------------
-    // --- FUNCIONES DE USUARIO ---
-    // ----------------------------
+    // ---------------------------
+    // --- FUNCIONES DE CUENTA ---
+    // ---------------------------
     public function getUser($id) {
         $this->result = [];
 
@@ -310,9 +355,9 @@ class Library {
         return $this->result;
     }
 
-    // -----------------------------
-    // --- FUNCIONES PARA SELECT ---
-    // -----------------------------
+    // -------------------------------
+    // --- FUNCIONES PARA DROPDOWN ---
+    // -------------------------------
 
     public function getStorage() {
         $this->result = [];
@@ -398,7 +443,6 @@ class Library {
                     unset($arr[$mainKey][$key]);
                 }
             }
-
         }
 
         return $arr;

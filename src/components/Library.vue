@@ -21,7 +21,7 @@ export default {
             // Devuelve la hora en este formato "YYYY-MM-DD HH:mm:ss"
             currentDate: (new Date().toISOString().slice(0,10))+" "+(new Date().toLocaleTimeString()),
             // --- PAGINACIÓN ---
-            rowsPerPage: 10, // Nº de filas que se enseñan en la tabla
+            rowsPerPage: localStorage.getItem("rowsPerPage") ?? 10, // Nº de filas que se enseñan en la tabla
             pageNumber: 0,   // Nº de la página actual
             // ------------------
         }
@@ -34,6 +34,14 @@ export default {
                 setTimeout(() => {
                     this.showMsg = false;
                 }, 3000);
+            },
+            deep: true,
+        },
+        rowsPerPage: {
+            handler(val) {
+                localStorage.setItem("rowsPerPage",val);
+                localStorage.getItem("rowsPerPage");
+                // console.log(localStorage.getItem("rowsPerPage"))
             },
             deep: true,
         }
@@ -49,6 +57,7 @@ export default {
                     row['isbn'].toString().includes(this.searchInput) ||
                     row['author'].toString().toLowerCase().includes(this.searchInput.toLowerCase()) ||
                     row['title'].toString().toLowerCase().includes(this.searchInput.toLowerCase()) ||
+                    (row['name_storage']+"-"+row['shelf']).toString().toLowerCase().includes(this.searchInput.toLowerCase()) ||
                     row['year'].toString().includes(this.searchInput) 
                 );  
             }
@@ -106,6 +115,9 @@ export default {
 
     created() {
         this.getPersonalLibrary(this.user);
+        if (!localStorage.hasOwnProperty('rowsPerPage')) {
+            localStorage.setItem('rowsPerPage', localStorage.getItem("rowsPerPage") ?? 10);   
+        }
     }
 }
 </script>
@@ -128,7 +140,7 @@ export default {
                 <div class="pagination">
                     <!-- BUSCADOR -->
                     <div>
-                        <input class="searchBox--input" type="text" v-model="searchInput" placeholder="Busca por ISBN, Título, Autor o año"/>
+                        <input class="searchBox--input" type="text" v-model="searchInput" size="42" placeholder="Busca por ISBN, Título, Autor, año o Estante"/>
                     </div>
                     <!-- -------- -->
                     <div>

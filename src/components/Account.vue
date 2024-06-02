@@ -208,7 +208,7 @@ export default {
 
             <div>
                 <h3>Copias de Seguridad</h3>
-                <p>Importación y exportación de copia de seguridad personal</p>
+                <!-- <p>Importación y exportación de copia de seguridad personal</p> -->
                 <div class="backupDiv">
                     <a type="button" :download="'backup_'+currentDate+'.csv'" :href="'data:text/csv;base64,'+backup" >Exportar Copia</a>
                     <div>
