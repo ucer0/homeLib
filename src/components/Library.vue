@@ -37,14 +37,21 @@ export default {
             },
             deep: true,
         },
+        // Cookie para que guarde el número de registros por página al cambiarlo
         rowsPerPage: {
             handler(val) {
                 localStorage.setItem("rowsPerPage",val);
                 localStorage.getItem("rowsPerPage");
-                // console.log(localStorage.getItem("rowsPerPage"))
             },
             deep: true,
+        },
+        // --- PAGINACIÓN ---
+        paginatedData() {
+            if (this.paginatedData.length == 0) {
+                this.pageNumber = 0;
+            }
         }
+        // ------------------
     },
 
     computed: {
