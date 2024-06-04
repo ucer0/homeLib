@@ -104,7 +104,8 @@ export default {
         },
 
         async importBackup(arr) {
-            if (confirm("Importar esta copia de seguridad sobreescribirá los datos actuales\n¿Quiere continuar?")) {
+            let confirmTxt = "Importar esta copia de seguridad sobreescribirá los datos actuales\n¿Quiere continuar?";
+            if (confirm(confirmTxt)) {
                 const res = await this.ajax({
                     accion: 'importBackup',
                     id: this.user,

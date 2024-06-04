@@ -199,6 +199,32 @@ class Library {
         return $this->result;
     }
 
+    public function deleteBook($userID,$bookID) {
+        $this->result = [];
+
+        $query = "DELETE FROM library.book_personal 
+                    WHERE id_user=:userID AND id_book=:bookID";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(":userID", $userID);
+        $stmt->bindValue(":bookID", $bookID);
+
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $this->result["code"] = QUERY_OK; 
+                $this->result["msg"] = QUERY_DELETE_MSG;
+            } else {
+                $this->result["code"] = QUERY_SIN_DATOS; 
+                $this->result["msg"] = QUERY_NO_DELETE_MSG;
+            }
+        } else {
+            $this->result["code"] = QUERY_NO_EJECUTADA; 
+            $this->result["msg"] = QUERY_NO_EJECUTADA;
+        }
+
+        return $this->result;
+    }
+
     // ---------------------------
     // --- FUNCIONES DE CUENTA ---
     // ---------------------------

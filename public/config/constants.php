@@ -30,6 +30,10 @@ const QUERY_SIN_DATOS_MSG          = "No se encontró ningún registro";
 const QUERY_IMPORT_MSG             = "Copia de seguridad importada";
 const QUERY_NO_IMPORT_MSG          = "No se pudo importar la copia de seguridad";
 
+const QUERY_DELETE_MSG             = "Libro borrado de la cuenta";
+const QUERY_NO_DELETE_MSG          = "No se pudo borrar el libro de la cuenta";
+
+
 const API_FOUND_MSG                = "Se encontró libro";
 const API_NOT_FOUND_MSG            = "No se encontraron registros con ese ISBN";
 

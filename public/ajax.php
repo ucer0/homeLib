@@ -28,7 +28,10 @@ if (!empty($post['accion'])) {
             $list = $lib->updateBook($post["id"],$post["data"]);
             response($list);
             break;
-
+        case 'deleteBook':
+            $list = $lib->deleteBook($post["id"],$post["book"]);
+            response($list);
+            break;
         // ---------------------------
         // --- FUNCIONES DE CUENTA ---
         // ---------------------------

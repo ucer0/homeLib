@@ -59,8 +59,22 @@ export default {
             this.code = res.code;
             this.msg = res.msg;
             this.showMsg = true;
-        }
+        },
 
+        async deleteBook(id,id_book) {
+            let confirmTxt = "¿Seguro que quieres borrar este libro?\n¡Se perderá para siempre!";
+            if (confirm(confirmTxt)) {
+                const res = await this.ajax({
+                    accion: 'deleteBook',
+                    id: id,
+                    book: id_book
+                });
+                this.code = res.code;
+                this.msg = res.msg;
+                this.showMsg = true;
+                this.getStorage();
+            }
+        }
     },
 
     created() {
@@ -136,6 +150,9 @@ export default {
             <div v-if="data.lent" class="filter__input">
                 <label for="lent_who">Fecha:</label>
                 <input type="date" v-model="data.lent_when" name="lent_when" :disabled="isDisabled">
+            </div>
+            <div v-if="!isDisabled" class="buttonDiv">
+                <button type="button" @click="deleteBook(user,book.id_book);" class="deleteButton" >Borrar Libro</button>
             </div>
         </div>
         <div class="buttonDiv">
