@@ -30,3 +30,4 @@ coverage
 *.tsbuildinfo
 
 .htaccess
+public/config/db.json

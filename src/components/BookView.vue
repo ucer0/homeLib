@@ -73,6 +73,7 @@ export default {
                 this.msg = res.msg;
                 this.showMsg = true;
                 this.getStorage();
+                this.$router.go();
             }
         }
     },

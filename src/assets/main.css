@@ -215,13 +215,9 @@ a, a:visited {
 /* ----------------- */
 .msgContainer {
   position: fixed;
-  bottom: 15%;
-  right: 25%;
-  /* top: 5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%; */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
 }
 
 .msg {
