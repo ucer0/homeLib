@@ -150,6 +150,13 @@ export default {
                 this.csvImport = false;
                 this.isImportDisabled = true;
             }
+        },
+
+        logOut() {
+            sessionStorage.removeItem("user");
+            sessionStorage.removeItem("uuid");
+            localStorage.removeItem("uuid");
+            this.$router.go();
         }
     },
 
@@ -196,6 +203,9 @@ export default {
                 <div class="buttonDiv">
                     <button type="button" @click="isDisabled=!isDisabled">Editar Datos</button>
                     <button type="button" @click="updateUser(saveInput)" class="updateButton" :disabled="isDisabled || !isDataValid()">Guardar Cambios</button>
+                </div>
+                <div class="buttonDiv">
+                    <button type="button" @click="logOut()" class="deleteButton">Salir de la Cuenta</button>
                 </div>
             </div>
 

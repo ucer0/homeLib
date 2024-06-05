@@ -50,7 +50,6 @@ export default {
     methods: {
 
         // --- MÉTODOS CON CONEXIÓN CON BBDD ---
-        // Son muchos pero prefiero tenerlos separados y ordenaditos antes que uno kilométrico
         async ajax(params) {
             const res = await axios.post('ajax.php', params);
             return res.data ? res.data : false;
@@ -88,17 +87,6 @@ export default {
             if (this.code == "SU0100") {
                 this.saveInput = {};
             }
-        },
-
-        async updateBook(id,arr) {
-            const res = await this.ajax({
-                accion: 'updateBook',
-                id: id,
-                data: arr
-            });
-            this.code = res.code;
-            this.msg = res.msg;
-            this.showMsg = true;
         },
 
         async getStorage() {

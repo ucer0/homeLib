@@ -228,57 +228,6 @@ class Library {
     // ---------------------------
     // --- FUNCIONES DE CUENTA ---
     // ---------------------------
-    public function getUser($id) {
-        $this->result = [];
-
-        $query = "SELECT name_user, mail, signupDate FROM library.user WHERE id_user=:id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(":id", $id);
-
-        if ($stmt->execute()) {
-            if ($stmt->rowCount() > 0) {
-                $this->result["code"] = QUERY_OK; 
-                $this->result["msg"] = QUERY_OK_MSG;
-                $this->result["data"] = $stmt->fetch();
-            } else {
-                $this->result["code"] = QUERY_SIN_DATOS; 
-                $this->result["msg"] = QUERY_SIN_DATOS_MSG;
-            }
-        } else {
-            $this->result["code"] = QUERY_NO_EJECUTADA; 
-            $this->result["msg"] = QUERY_NO_EJECUTADA;
-        }
-
-        return $this->result;
-    }
-
-    public function updateUser($userID,$dataArray,$pwd) {
-        $this->result = [];
-        $query = "UPDATE library.user 
-                    SET name_user=:name_user, mail=:mail, password=MD5(:password)
-                    WHERE id_user=:userID";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(":userID", $userID);
-        $stmt->bindValue(":name_user", $dataArray["name_user"]);
-        $stmt->bindValue(":mail", $dataArray["mail"] ?? null);
-        $stmt->bindValue(":password", $pwd);
-
-        if ($stmt->execute()) {
-            if ($stmt->rowCount() > 0) {
-                $this->result["code"] = QUERY_OK; 
-                $this->result["msg"] = QUERY_UPDATE_USER_MSG;
-            } else {
-                $this->result["code"] = QUERY_SIN_DATOS; 
-                $this->result["msg"] = QUERY_NO_UPDATE_MSG;
-            }
-        } else {
-            $this->result["code"] = QUERY_NO_EJECUTADA; 
-            $this->result["msg"] = QUERY_NO_EJECUTADA;
-        }
-
-        return $this->result;
-    }
 
     public function getDownloadableLibrary($id) {
         $this->result = [];
