@@ -5,7 +5,7 @@ use Book;
 
 // Icluimos el archivo de constantes
 require_once(__DIR__."/../config/constants.php");
-require_once("BookAPI.class.php");
+require_once("bookAPI.class.php");
 
 class Library {
 
@@ -39,7 +39,7 @@ class Library {
         $query = "SELECT b.id_book, b.isbn, b.title, b.subtitle, b.author, b.coauthor, b.editor, b.edition, b.year, b.pages, b.id_format, b.id_genre, b.pic, 
                             bp.dateBought, bp.price, bp.id_storage, bp.shelf, bp.lent, bp.lent_who, bp.lent_when,
                             f.name_format, g.name_genre, s.name_storage 
-                    FROM book as b, book_personal as bp, format as f, genre as g, storage as s  
+                    FROM library.book as b, library.book_personal as bp, library.format as f, library.genre as g, library.storage as s  
                     WHERE bp.id_user = :userID AND b.id_book = bp.id_book
                         AND bp.id_storage = s.id_storage
                         AND b.id_format = f.id_format
@@ -76,7 +76,7 @@ class Library {
 
         // Primero buscamos si existe en la base de datos
         $query = "SELECT id_book, isbn, title, subtitle, author, coauthor, editor, edition, year, pages, id_format, id_genre, pic
-                    FROM book WHERE isbn=:isbn";
+                    FROM library.book WHERE isbn=:isbn";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(":isbn", $isbn);
 
@@ -125,7 +125,7 @@ class Library {
 
         // Futura actualización: Quitar lo de isNew y hacer checkeo siempre de si existe al guardar el libro, no antes
         if ($isNew) {
-            $query = "INSERT INTO book (isbn,title,subtitle,author,coauthor,editor,edition,year,pages,id_format,id_genre,pic) 
+            $query = "INSERT INTO library.book (isbn,title,subtitle,author,coauthor,editor,edition,year,pages,id_format,id_genre,pic) 
                         VALUES (:isbn,:title,:subtitle,:author,:coauthor,:editor,:edition,:year,:pages,:id_format,:id_genre,:pic)";
 
             $stmt = $this->db->prepare($query);
@@ -146,14 +146,14 @@ class Library {
         }
 
         // Buscamos el ID del libro a añadir para la colección personal
-        $query = "SELECT id_book FROM book WHERE isbn=:isbn";
+        $query = "SELECT id_book FROM library.book WHERE isbn=:isbn";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(":isbn", $dataArray["isbn"]);
         $stmt->execute();
         $bookID = $stmt->fetch()["id_book"];
 
         // Añadimos el libro y los datos personales a la cuenta
-        $query = "INSERT INTO book_personal (id_user,id_book,dateBought,price,id_storage,shelf,lent,lent_who,lent_when,_dateAdded)
+        $query = "INSERT INTO library.book_personal (id_user,id_book,dateBought,price,id_storage,shelf,lent,lent_who,lent_when,_dateAdded)
                     VALUES (:userID,:bookID,:dateBought,:price,:id_storage,:shelf,:lent,:lent_who,:lent_when,CURDATE())";
         
         $stmt = $this->db->prepare($query);
@@ -191,7 +191,7 @@ class Library {
      */
     public function updateBook($userID,$dataArray) {
         $this->result = [];
-        $query = "UPDATE book_personal 
+        $query = "UPDATE library.book_personal 
                     SET dateBought=:dateBought, price=:price, id_storage=:id_storage, shelf=:shelf, 
                         lent=:lent, lent_who=:lent_who, lent_when=:lent_when
                     WHERE id_user=:userID AND id_book=:bookID";
@@ -232,7 +232,7 @@ class Library {
     public function deleteBook($userID,$bookID) {
         $this->result = [];
 
-        $query = "DELETE FROM book_personal 
+        $query = "DELETE FROM library.book_personal 
                     WHERE id_user=:userID AND id_book=:bookID";
         
         $stmt = $this->db->prepare($query);
@@ -271,7 +271,7 @@ class Library {
                     b.edition AS 'Edición', b.year AS 'Año', b.pages AS 'Páginas', f.name_format AS 'Formato', g.name_genre AS 'Género', bp.dateBought AS 'Fecha Compra', 
                     bp.price AS 'Precio', s.name_storage AS 'Localización', bp.shelf AS 'Estante', bp.lent AS 'Prestado', bp.lent_who AS 'Quién Prestado', 
                     bp.lent_when AS 'Cuándo Prestado',b.pic AS 'Portada'
-                    FROM book as b, book_personal as bp, format as f, genre as g, storage as s  
+                    FROM library.book as b, library.book_personal as bp, library.format as f, library.genre as g, library.storage as s  
                     WHERE bp.id_user = :userID AND b.id_book = bp.id_book
                         AND bp.id_storage = s.id_storage
                         AND b.id_format = f.id_format
@@ -306,7 +306,7 @@ class Library {
         $this->result = [];
 
         $query = "SELECT id_book, dateBought, price, id_storage, shelf, lent, lent_who, lent_when, _dateAdded
-                    FROM book_personal WHERE id_user=:userID";
+                    FROM library.book_personal WHERE id_user=:userID";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(":userID", $id);
@@ -347,7 +347,7 @@ class Library {
             $fields = implode(",",$dataArray[0]);
             array_shift($dataArray);
 
-            $query = "INSERT INTO book_personal (id_user,$fields)
+            $query = "INSERT INTO library.book_personal (id_user,$fields)
                         VALUES (:userID,:bookID,:dateBought,:price,:id_storage,:shelf,:lent,:lent_who,:lent_when,:_dateAdded) 
                         ON DUPLICATE KEY UPDATE
                             id_user=:userID,id_book=:bookID,dateBought=:dateBought,price=:price,id_storage=:id_storage,
@@ -390,7 +390,7 @@ class Library {
     public function getStorage() {
         $this->result = [];
 
-        $query = "SELECT id_storage, name_storage FROM storage";
+        $query = "SELECT id_storage, name_storage FROM library.storage";
         $stmt = $this->db->prepare($query);
 
         if ($stmt->execute()) {
@@ -417,7 +417,7 @@ class Library {
     public function getGenre() {
         $this->result = [];
 
-        $query = "SELECT id_genre, name_genre FROM genre";
+        $query = "SELECT id_genre, name_genre FROM library.genre";
         $stmt = $this->db->prepare($query);
 
         if ($stmt->execute()) {
@@ -444,7 +444,7 @@ class Library {
     public function getFormat() {
         $this->result = [];
 
-        $query = "SELECT id_format, name_format FROM format";
+        $query = "SELECT id_format, name_format FROM library.format";
         $stmt = $this->db->prepare($query);
 
         if ($stmt->execute()) {

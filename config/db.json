@@ -1,7 +1,7 @@
 {
-"DB_NAME": "homeLib_warfurther",
-"DB_USER": "homeLib_warfurther",
-"DB_PASS": "c97a9483e351fe97b083d086d95225b8512d4220",
-"DB_HOST": "hcx.h.filess.io",
-"DB_PORT": 3307
+"DB_NAME": "library",
+"DB_USER": "root",
+"DB_PASS": "",
+"DB_HOST": "localhost",
+"DB_PORT": 3306
 }
