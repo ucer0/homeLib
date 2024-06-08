@@ -498,7 +498,7 @@ class Library {
             $imgLink = 'https://images.isbndb.com/covers/'.substr($lastDigits, 0, 2).'/'.substr($lastDigits, 2).'/'.$isbn.'.jpg';
         } else if (strlen($isbn) == 10) {
             $lastDigits = substr($this->convertToISBN13($isbn),-4);
-            $imgLink = 'https://images.isbndb.com/covers/'.substr($lastDigits, 0, 2).'/'.substr($lastDigits, 2).'/'.$isbn.'.jpg';
+            $imgLink = 'https://images.isbndb.com/covers/'.substr($lastDigits, 0, 2).'/'.substr($lastDigits, 2).'/'.$this->convertToISBN13($isbn).'.jpg';
         }
         
         return $imgLink;
@@ -521,7 +521,7 @@ class Library {
             }
         }
 
-        $isbn13 = substr($isbn13,-1).(10-($lastDigit%10));
+        $isbn13 .= (10-($lastDigit%10));
 
         return $isbn13;
     }
