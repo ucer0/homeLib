@@ -8,6 +8,11 @@
  */
 class Book {
 
+    /**
+     * Recoge todos los datos posibles de un libro si se encuentra
+     * @param int $isbn
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getBookByISBN($isbn) {
         $result = [];
         $apiLink = "https://openlibrary.org/api/books?bibkeys=ISBN:".$isbn."&format=json&jscmd=data";

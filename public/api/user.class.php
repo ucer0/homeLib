@@ -13,7 +13,10 @@ class User {
     }
 
     /**
-     * 
+     * Entra en la cuenta de un usuario existente
+     * @param string $user
+     * @param string $pass
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
      */
     public function login($user,$pass) {
         $this->result = [];
@@ -40,6 +43,11 @@ class User {
         return $this->result;
     }
 
+    /**
+     * Crea un nuevo usuario
+     * @param array $data --> Campos: user, pass, pass2
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function signup($data) {
         $this->result = [];
 
@@ -65,6 +73,11 @@ class User {
         return $this->result;
     }
 
+    /**
+     * Recoge los datos de la cuenta de un usuario
+     * @param int $id
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getUser($id) {
         $this->result = [];
 
@@ -89,6 +102,13 @@ class User {
         return $this->result;
     }
 
+    /**
+     * Actualiza los datos de la cuenta de un usuario
+     * @param int $userID
+     * @param array $dataArray
+     * @param string $pwd
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function updateUser($userID,$dataArray,$pwd) {
         $this->result = [];
         $query = "UPDATE library.user 

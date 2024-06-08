@@ -27,6 +27,12 @@ class Library {
     // --- ENSEÑAR LIBROS ---
     // ----------------------
 
+    /**
+     * Recoge todos los datos de todos los libros de la cuenta de un usuario
+     * @param int $id
+     * @param array $filters --> No implementado, para una posible busqueda avanzada por varios campos
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getPersonalLibrary($id, $filters=[]) {
         $this->result = [];
 
@@ -60,6 +66,11 @@ class Library {
         return $this->result;
     }
     
+    /**
+     * Recoge todos los datos de un libro específico
+     * @param int $isbn
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getBook($isbn) {
         $this->result = [];
 
@@ -102,10 +113,17 @@ class Library {
         return $this->result;
     }
 
+    /**
+     * Guarda un libro para la colección personal de un usuario, si este no está aún en la base de datos general se añade también
+     * @param int $userID
+     * @param array $dataArray
+     * @param bool $isNew
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function saveBook($userID,$dataArray,$isNew) {
         $this->result = [];
 
-        // QUITAR LO DE isNew Y HACER EL CHECKEO SIEMPRE DE SI EXISTE AL GUARDAR EL LIBRO, NO ANTES !!!!!!!!
+        // Futura actualización: Quitar lo de isNew y hacer checkeo siempre de si existe al guardar el libro, no antes
         if ($isNew) {
             $query = "INSERT INTO library.book (isbn,title,subtitle,author,coauthor,editor,edition,year,pages,id_format,id_genre,pic) 
                         VALUES (:isbn,:title,:subtitle,:author,:coauthor,:editor,:edition,:year,:pages,:id_format,:id_genre,:pic)";
@@ -165,6 +183,12 @@ class Library {
         return $this->result;
     }
 
+    /**
+     * Actualiza los datos personales de un libro de la cuenta de un usuario
+     * @param int $userID
+     * @param array $dataArray
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function updateBook($userID,$dataArray) {
         $this->result = [];
         $query = "UPDATE library.book_personal 
@@ -199,6 +223,12 @@ class Library {
         return $this->result;
     }
 
+    /**
+     * Borra un libro de la cuenta de un usuario
+     * @param int $userID
+     * @param int $bookID
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function deleteBook($userID,$bookID) {
         $this->result = [];
 
@@ -229,6 +259,11 @@ class Library {
     // --- FUNCIONES DE CUENTA ---
     // ---------------------------
 
+    /**
+     * Exporta una copia legible de la biblioteca completa de un usuario
+     * @param int $is
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getDownloadableLibrary($id) {
         $this->result = [];
 
@@ -262,6 +297,11 @@ class Library {
         return $this->result;
     }
 
+    /**
+     * Exporta una copia de seguridad local de la base de datos personal de un usuario
+     * @param int $id
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function exportBackup($id) {
         $this->result = [];
 
@@ -288,6 +328,14 @@ class Library {
         return $this->result;
     }
 
+    
+    /**
+     * Importa una copia de seguridad local de la base de datos personal de un usuario
+     * @param int $userID
+     * @param array $dataArray
+     * @param string $pwd
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     function importBackup($id,$dataArray) {
         $this->result = [];
         $dataArray = explode("\n",$dataArray);
@@ -334,6 +382,11 @@ class Library {
     // --- FUNCIONES PARA DROPDOWN ---
     // -------------------------------
 
+    
+    /**
+     * Recoge todas las localizaciones
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getStorage() {
         $this->result = [];
 
@@ -357,6 +410,10 @@ class Library {
         return $this->result;
     }
 
+    /**
+     * Recoge todos los géneros de libros
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getGenre() {
         $this->result = [];
 
@@ -380,6 +437,10 @@ class Library {
         return $this->result;
     }
 
+    /**
+     * Recoge todos los formatos de libros
+     * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
+     */
     public function getFormat() {
         $this->result = [];
 
@@ -409,7 +470,8 @@ class Library {
 
     /**
      * Borra los valores numéricos del las respuestas, reduciendo a la mitad todos los datos
-     *
+     * @param array $arr
+     * @return array $arr
      */
     private function cleanResult($arr) {
         foreach ($arr as $mainKey => $value) {
@@ -425,7 +487,8 @@ class Library {
 
     /**
      * Genera el link de una portada a partir de una base de datos de libros
-     * 
+     * @param int $isbn
+     * @return string $imgLink
      */
     private function getPicFromISBN($isbn){
         $imgLink = '';
@@ -443,7 +506,8 @@ class Library {
 
     /**
      * Convierte un ISBN-10 a un ISBN-13
-     * 
+     * @param int $isbn
+     * @return string $isbn13
      */
     private function convertToISBN13($isbn) {
         $isbn13 = '978'.substr($isbn,0,-1);
@@ -464,7 +528,8 @@ class Library {
 
     /**
      * Transforma un Array en un .csv encriptado en base64
-     * 
+     * @param array $arr
+     * @return string $csvContent
      */
     private function exportArrayToCSV($arr) {
         $csv = fopen('php://memory','rw+');
