@@ -5,7 +5,7 @@ use Book;
 
 // Icluimos el archivo de constantes
 require_once(__DIR__."/../config/constants.php");
-require_once("BookAPI.class.php");
+require_once("bookAPI.class.php");
 
 class Library {
 
@@ -332,7 +332,7 @@ class Library {
     /**
      * Importa una copia de seguridad local de la base de datos personal de un usuario
      * @param int $userID
-     * @param array $dataArray
+     * @param string $dataArray --> Realmente es array
      * @param string $pwd
      * @return array $result --> Devuelve datos de la query (si los hubiese) y código de error
      */

@@ -13,7 +13,8 @@ export default {
             code: "",
             msg: "",
             data: [],
-            headers: ["Título", "Autor", "Año", "Localización",],
+            bookData: [],
+            headers: ["Título", "Autor", "Año", "Local.",],
             showMsg: false,
             showTarjetaView: false,
             searchInput: "",
@@ -118,6 +119,16 @@ export default {
             this.pageNumber--;
         },
         // ------------------
+
+        bookSelected(id) {
+            this.data.forEach((element,index) => {
+                if (element.id_book == id) {
+                    this.bookData = this.data[index];
+                    this.showTarjetaView = true;
+                    // return this.data[index];
+                }
+            });
+        }
     },
 
     created() {
@@ -173,7 +184,7 @@ export default {
                     <tr class="tableHeader">
                         <th v-for="row in headers">{{ row }}</th>
                     </tr>
-                    <tr v-for="(row,index) in paginatedData" class="tableRow" @click="(currentIDSelected=index),(showTarjetaView=true)">
+                    <tr v-for="(row,index) in paginatedData" class="tableRow" @click="bookSelected(row.id_book)">
                         <!-- <td>{{ row.isbn }}</td> -->
                         <td>{{ row.title }}</td>
                         <td>{{ row.author }}</td>
@@ -194,7 +205,8 @@ export default {
     <div v-if="showTarjetaView">
         <div class="floatingForm_bg" @click="showTarjetaView = false"></div>
         <div class=" floatingForm">
-            <BookView :user="user" :book="data[currentIDSelected]"/>
+            <button type="button" @click="showTarjetaView = false" class="deleteButton" >❌ Cerrar</button>
+            <BookView :user="user" :book="bookData"/>
         </div>
     </div>
 </template>
