@@ -1,11 +1,15 @@
 <?php
 
+// Recogemos los datos de db.json
+$file = file_get_contents(__DIR__."/db.json");
+$dbData = json_decode($file,true);
+
 // Credenciales de conexión de la Base de Datos
-const DB_NAME = "library";
-const DB_USER = "root";
-const DB_PASS = "";
-const DB_HOST = "localhost";
-const DB_PORT = "3306";
+define("DB_NAME", $dbData["DB_NAME"]);
+define("DB_USER", $dbData["DB_USER"]);
+define("DB_PASS", $dbData["DB_PASS"]);
+define("DB_HOST", $dbData["DB_HOST"]);
+define("DB_PORT", $dbData["DB_PORT"]);
 
 try{
     $connection = "mysql:dbname=".DB_NAME.";host=".DB_HOST.";port=".DB_PORT.";";
